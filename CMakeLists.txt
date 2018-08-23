@@ -9,7 +9,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF()
 
 find_package(Qt5Widgets REQUIRED)
-find_package(OpenCV 2.4.3 REQUIRED)
+find_package(OpenCV REQUIRED) #2.4.3
 
 # For QT GUI projects, run MOC and UIC automatically when needed.
 set(CMAKE_AUTOMOC ON)
@@ -93,9 +93,9 @@ include_directories(
   ${source_dir}/include
 )
 
-add_subdirectory(thirdparty/DBoW2)
-add_subdirectory(thirdparty/g2o)
-add_subdirectory(thirdparty/orb-slam2)
+#add_subdirectory(thirdparty/DBoW2)
+#add_subdirectory(thirdparty/g2o)
+#add_subdirectory(thirdparty/orb-slam2)
 
 include_directories(
 ${PROJECT_SOURCE_DIR}/include
@@ -110,20 +110,20 @@ ${PROJECT_SOURCE_DIR}/sketches/libs/kia-spoof-steering
 ${PROJECT_SOURCE_DIR}/sketches/libs/spoof-steering-serial-commands
 )
 
-add_library(pilotgurulib SHARED
-  ${PROJECT_SOURCE_DIR}/src/calibration/rotation.cc
-  ${PROJECT_SOURCE_DIR}/src/calibration/velocity.cc
-  ${PROJECT_SOURCE_DIR}/src/geometry/geometry.cc
-  ${PROJECT_SOURCE_DIR}/src/io/image_sequence_reader.cc
-  ${PROJECT_SOURCE_DIR}/src/io/image_sequence_writer.cc
-  ${PROJECT_SOURCE_DIR}/src/interpolation/align_time_series.cc
-  ${PROJECT_SOURCE_DIR}/src/io/json_converters.cc
-  ${PROJECT_SOURCE_DIR}/src/optimization/gradient_descent.cc
-  ${PROJECT_SOURCE_DIR}/src/slam/horizontal_flatten.cc
-  ${PROJECT_SOURCE_DIR}/src/slam/track_image_sequence.cc
-  ${PROJECT_SOURCE_DIR}/src/slam/smoothing.cc
-)
-target_link_libraries(pilotgurulib ORB_SLAM2)
+#add_library(pilotgurulib SHARED
+#  ${PROJECT_SOURCE_DIR}/src/calibration/rotation.cc
+#  ${PROJECT_SOURCE_DIR}/src/calibration/velocity.cc
+#  ${PROJECT_SOURCE_DIR}/src/geometry/geometry.cc
+#  ${PROJECT_SOURCE_DIR}/src/io/image_sequence_reader.cc
+#  ${PROJECT_SOURCE_DIR}/src/io/image_sequence_writer.cc
+#  ${PROJECT_SOURCE_DIR}/src/interpolation/align_time_series.cc
+#  ${PROJECT_SOURCE_DIR}/src/io/json_converters.cc
+#  ${PROJECT_SOURCE_DIR}/src/optimization/gradient_descent.cc
+#  ${PROJECT_SOURCE_DIR}/src/slam/horizontal_flatten.cc
+#  ${PROJECT_SOURCE_DIR}/src/slam/track_image_sequence.cc
+#  ${PROJECT_SOURCE_DIR}/src/slam/smoothing.cc
+#)
+#target_link_libraries(pilotgurulib ORB_SLAM2)
 
 add_library(
     steeringcommandslib SHARED
@@ -150,8 +150,8 @@ add_library(
     ${PROJECT_SOURCE_DIR}/src/car/kia_steering_angle_holder.cc)
 target_link_libraries(kia_steering_angle_holder_lib kalman_filter_lib kiacanlib arduinocommlib glog)
 
-add_library(nn_comm SHARED ${PROJECT_SOURCE_DIR}/src/nn_comm/nn_comm.cc)
-target_link_libraries(nn_comm glog)
+#add_library(nn_comm SHARED ${PROJECT_SOURCE_DIR}/src/nn_comm/nn_comm.cc)
+#target_link_libraries(nn_comm glog)
 
 add_library(qt_helpers SHARED ${PROJECT_SOURCE_DIR}/src/ui/timestamped_history_qt_helpers.cpp)
 target_link_libraries(qt_helpers kiacanlib glog Qt5::Widgets)
@@ -160,20 +160,20 @@ add_library(
 	spoof_voltage_smoothing_lib SHARED
 	${PROJECT_SOURCE_DIR}/sketches/libs/kia-spoof-steering/spoof-voltage-smoothing.cpp)
 
-add_executable(annotate_frames src/annotate_frames.cc)
-add_executable(calibrate src/calibrate.cc)
-add_executable(fit_motion src/fit_motion.cc)
-add_executable(integrate_motion src/integrate_motion.cc)
-add_executable(interpolate_velocity src/interpolate_velocity.cc)
-add_executable(kia_steering_angle src/kia_steering_angle.cc)
-add_executable(kia_steering_nn src/kia_steering_nn.cc src/ui_steering_nn/steering_nn_main_window.cpp)
+#add_executable(annotate_frames src/annotate_frames.cc)
+#add_executable(calibrate src/calibrate.cc)
+#add_executable(fit_motion src/fit_motion.cc)
+#add_executable(integrate_motion src/integrate_motion.cc)
+#add_executable(interpolate_velocity src/interpolate_velocity.cc)
+#add_executable(kia_steering_angle src/kia_steering_angle.cc)
+#add_executable(kia_steering_nn src/kia_steering_nn.cc src/ui_steering_nn/steering_nn_main_window.cpp)
 add_executable(kia_steering_ui src/kia_steering_ui.cc src/ui_steering_manual/kia_steering_ui_main_window.cpp)
-add_executable(optical_trajectories src/optical_trajectories.cc)
-add_executable(process_can_frames src/process_can_frames.cc)
-add_executable(project_translations src/project_translations.cc)
-add_executable(render_frame_numbers src/render_frame_numbers.cc)
-add_executable(render_motion src/render_motion.cc)
-add_executable(smooth_heading_directions src/smooth_heading_directions.cc)
+#add_executable(optical_trajectories src/optical_trajectories.cc)
+#add_executable(process_can_frames src/process_can_frames.cc)
+#add_executable(project_translations src/project_translations.cc)
+#add_executable(render_frame_numbers src/render_frame_numbers.cc)
+#add_executable(render_motion src/render_motion.cc)
+#add_executable(smooth_heading_directions src/smooth_heading_directions.cc)
 
 add_executable(
     steeringcommandslib_test
@@ -199,17 +199,17 @@ add_executable(
 target_link_libraries(spoof_voltage_smoothing_lib_test spoof_voltage_smoothing_lib gtest_main_all glog)  
 add_test(SpoofVoltageSmoothingLibTest spoof_voltage_smoothing_lib_test)
 
-target_link_libraries(annotate_frames pilotgurulib ${OpenCV_LIBS} glog gflags)
-target_link_libraries(calibrate ${OpenCV_LIBS} glog gflags)
-target_link_libraries(fit_motion pilotgurulib glog gflags)
-target_link_libraries(integrate_motion pilotgurulib glog gflags)
-target_link_libraries(interpolate_velocity pilotgurulib glog gflags)
-target_link_libraries(kia_steering_angle kiacanlib glog gflags pthread)
-target_link_libraries(kia_steering_nn qt_helpers nn_comm kia_json_loggers kia_steering_angle_holder_lib arduinocommlib kiacanlib glog gflags zmq pthread Qt5::Widgets)
+#target_link_libraries(annotate_frames pilotgurulib ${OpenCV_LIBS} glog gflags)
+#target_link_libraries(calibrate ${OpenCV_LIBS} glog gflags)
+#target_link_libraries(fit_motion pilotgurulib glog gflags)
+#target_link_libraries(integrate_motion pilotgurulib glog gflags)
+#target_link_libraries(interpolate_velocity pilotgurulib glog gflags)
+#target_link_libraries(kia_steering_angle kiacanlib glog gflags pthread)
+#target_link_libraries(kia_steering_nn qt_helpers nn_comm kia_json_loggers kia_steering_angle_holder_lib arduinocommlib kiacanlib glog gflags zmq pthread Qt5::Widgets)
 target_link_libraries(kia_steering_ui qt_helpers kia_json_loggers kia_steering_angle_holder_lib arduinocommlib kiacanlib glog gflags pthread Qt5::Widgets)
-target_link_libraries(optical_trajectories pilotgurulib ${OpenCV_LIBS} glog gflags)
-target_link_libraries(process_can_frames pilotgurulib kiacanlib glog gflags)
-target_link_libraries(project_translations pilotgurulib ${OpenCV_LIBS} glog gflags)
-target_link_libraries(render_frame_numbers pilotgurulib ${OpenCV_LIBS} glog gflags)
-target_link_libraries(render_motion pilotgurulib ${OpenCV_LIBS} glog gflags)
-target_link_libraries(smooth_heading_directions pilotgurulib glog gflags)
+#target_link_libraries(optical_trajectories pilotgurulib ${OpenCV_LIBS} glog gflags)
+#target_link_libraries(process_can_frames pilotgurulib kiacanlib glog gflags)
+#target_link_libraries(project_translations pilotgurulib ${OpenCV_LIBS} glog gflags)
+#target_link_libraries(render_frame_numbers pilotgurulib ${OpenCV_LIBS} glog gflags)
+#target_link_libraries(render_motion pilotgurulib ${OpenCV_LIBS} glog gflags)
+#target_link_libraries(smooth_heading_directions pilotgurulib glog gflags)
